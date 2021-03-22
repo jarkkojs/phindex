@@ -70,15 +70,15 @@ if __name__ == "__main__":
         source_path = "%s%s%s" % (source_dir_path, os.sep, source_basename)
         source_path = os.path.abspath(source_path)
 
-        print "SOURCE: " + source_basename
+        print("SOURCE: " + source_basename)
 
         mode = os.stat(source_path)[stat.ST_MODE]
         if not stat.S_ISREG(mode):
-            print "SKIP: Is not a regular file."
+            print("SKIP: Is not a regular file.")
             continue
 
         try:
-            with file(source_path) as im_file:
+            with open(source_path, 'rb') as im_file:
                 source_md5 = md5()
                 while True:
                     data = im_file.read(8192)
@@ -87,7 +87,7 @@ if __name__ == "__main__":
                     source_md5.update(data)
                 md5sum = source_md5.hexdigest()
         except:
-            print "SKIP: File open failed."
+            print("SKIP: File open failed.")
             continue
 
         timestamp = None
@@ -99,7 +99,7 @@ if __name__ == "__main__":
                 im = Image.open(source_path)
                 exif = im._getexif()
                 if exif == None:
-                    print "SKIP: Does not have EXIF."
+                    print("SKIP: Does not have EXIF.")
                     continue
                 for k, v in exif.items():
                     k = TAGS.get(k, k)
@@ -107,12 +107,12 @@ if __name__ == "__main__":
                         v = re.sub(r'[: ]', r'', v)
                         timestamp = v
             except IOError:
-                print "SKIP: Is not an image."
+                print("SKIP: Is not an image.")
                 continue
 
 
         if timestamp == None:
-            print "SKIP: No timestamp."
+            print("SKIP: No timestamp.")
             continue
 
         fext = os.path.splitext(source_basename)[1]
@@ -122,5 +122,5 @@ if __name__ == "__main__":
         dest_path = os.path.abspath(dest_path)
 
         shutil.copy(source_path, dest_path)
-        print "DEST: " + dest_basename
+        print("DEST: " + dest_basename)
 
